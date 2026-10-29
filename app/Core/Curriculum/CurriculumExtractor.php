@@ -53,6 +53,7 @@ class CurriculumExtractor
         if ($reason = $this->guard->deny($user, $moduleKey)) {
             throw new RuntimeException($reason);
         }
+        $this->guard->throttle($user);
 
         $extraction = CurriculumExtraction::create([
             'library_file_id' => $file->id,

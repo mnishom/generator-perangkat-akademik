@@ -4,7 +4,8 @@ Platform modular bagi Program Studi di Universitas Harkat Negeri untuk menyusun 
 
 - Stack: Laravel 12 · Livewire 3 · Tailwind CSS 4 · MySQL/MariaDB · Pest
 - Keputusan teknis: [`docs/DECISIONS.md`](docs/DECISIONS.md)
-- Panduan deploy cPanel: `docs/DEPLOY_CPANEL.md` (menyusul)
+- Panduan deploy cPanel: [`docs/DEPLOY_CPANEL.md`](docs/DEPLOY_CPANEL.md)
+- Modul aktif: `config/modules.php` (Modul 1: Perangkat Pembelajaran)
 
 ## Pengembangan lokal
 

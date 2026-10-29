@@ -48,6 +48,8 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/', Admin\UsageDashboard::class)->name('dashboard');
+        Route::get('/prompt', Admin\Prompts::class)->name('prompts');
         Route::get('/pengguna', Admin\Users::class)->name('users');
         Route::get('/prodi', Admin\Prodis::class)->name('prodis');
         Route::get('/modul', Admin\Modules::class)->name('modules');

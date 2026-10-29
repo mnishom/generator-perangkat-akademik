@@ -263,3 +263,13 @@ it('menghapus berkas masukan dari Files API setelah semua task selesai bila diat
     expect($fake->deleted)->toBe(array_keys($fake->uploaded))
         ->and($session->fresh()->option('remote_files'))->toBe([]);
 });
+
+it('membatasi laju aksi generate per pengguna', function () {
+    Queue::fake();
+    config(['platform.generate_rate_per_minute' => 2]);
+    $launcher = app(SessionLauncher::class);
+    $launcher->launch(dummySession($this->user, ['A1']));
+    $launcher->launch(dummySession($this->user, ['A1']));
+
+    expect(fn () => $launcher->launch(dummySession($this->user, ['A1'])))->toThrow(RuntimeException::class, 'Terlalu banyak');
+});

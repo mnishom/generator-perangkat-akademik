@@ -33,6 +33,7 @@ class SessionLauncher
         if ($reason = $this->guard->deny($session->user, $session->module_key)) {
             throw new RuntimeException($reason);
         }
+        $this->guard->throttle($session->user);
 
         $module = $this->modules->get($session->module_key);
         $model = $session->model ?: $this->access->modelFor($module->key());
@@ -93,6 +94,7 @@ class SessionLauncher
         if ($reason = $this->guard->deny($session->user, $session->module_key)) {
             throw new RuntimeException($reason);
         }
+        $this->guard->throttle($session->user);
         if (! $task->isFinished()) {
             throw new RuntimeException('Proses sebelumnya untuk dokumen ini masih berjalan.');
         }

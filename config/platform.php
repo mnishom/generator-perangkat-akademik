@@ -21,6 +21,9 @@ return [
     */
     'dev_login' => (bool) env('DEV_LOGIN', false),
 
+    /* Batas aksi generate per pengguna per menit (mulai generate, uji coba, generate ulang, ekstraksi). */
+    'generate_rate_per_minute' => (int) env('GENERATE_RATE_PER_MINUTE', 10),
+
     'university_name' => env('UNIVERSITY_NAME', 'Universitas Harkat Negeri'),
 
 ];

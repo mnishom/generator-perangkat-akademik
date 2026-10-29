@@ -6,6 +6,8 @@ use App\Core\Modules\ModuleAccess;
 use App\Core\Usage\QuotaService;
 use App\Models\User;
 use App\Services\Settings;
+use Illuminate\Support\Facades\RateLimiter;
+use RuntimeException;
 
 /**
  * Pemeriksaan sebelum memanggil Claude. Dipanggil saat pengguna memulai
@@ -41,5 +43,21 @@ class GenerationGuard
         }
 
         return $this->quota->exceeded($user, $moduleKey);
+    }
+
+    /**
+     * Rate limit untuk aksi pengguna yang memicu generate (bukan di dalam Job).
+     *
+     * @throws RuntimeException
+     */
+    public function throttle(User $user): void
+    {
+        $key = 'generate-action:'.$user->id;
+        $max = (int) config('platform.generate_rate_per_minute', 10);
+
+        if (RateLimiter::tooManyAttempts($key, $max)) {
+            throw new RuntimeException('Terlalu banyak permintaan generate. Coba lagi dalam '.RateLimiter::availableIn($key).' detik.');
+        }
+        RateLimiter::hit($key, 60);
     }
 }

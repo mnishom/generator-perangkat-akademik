@@ -26,9 +26,11 @@
 @if (auth()->user()?->isAdmin())
     <div class="space-y-1">
         <p class="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-krem-300/70">Admin</p>
+ <a href="{{ route('admin.dashboard') }}" class="{{ $link(request()->routeIs('admin.dashboard')) }}" wire:navigate><x-icon name="chart" /> Dashboard Pemakaian</a>
         <a href="{{ route('admin.users') }}" class="{{ $link(request()->routeIs('admin.users')) }}" wire:navigate>Pengguna</a>
         <a href="{{ route('admin.prodis') }}" class="{{ $link(request()->routeIs('admin.prodis')) }}" wire:navigate>Prodi &amp; Fakultas</a>
         <a href="{{ route('admin.modules') }}" class="{{ $link(request()->routeIs('admin.modules')) }}" wire:navigate>Modul</a>
+        <a href="{{ route('admin.prompts') }}" class="{{ $link(request()->routeIs('admin.prompts')) }}" wire:navigate>Prompt Default</a>
         <a href="{{ route('admin.settings') }}" class="{{ $link(request()->routeIs('admin.settings')) }}" wire:navigate>Pengaturan</a>
         <a href="{{ route('admin.audit') }}" class="{{ $link(request()->routeIs('admin.audit')) }}" wire:navigate>Audit Log</a>
     </div>
