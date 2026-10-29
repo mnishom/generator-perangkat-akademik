@@ -5,6 +5,7 @@
 @endphp
 <div class="space-y-1">
     <a href="{{ route('dashboard') }}" class="{{ $link(request()->routeIs('dashboard')) }}" wire:navigate><x-icon name="home" /> Beranda</a>
+    <a href="{{ route('history') }}" class="{{ $link(request()->routeIs('history', 'sessions.*')) }}" wire:navigate><x-icon name="clock" /> Riwayat</a>
 </div>
 
 @if ($navModules)

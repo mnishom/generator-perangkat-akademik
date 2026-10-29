@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\DocumentDownloadController;
 use App\Http\Controllers\LibraryFileDownloadController;
+use App\Http\Controllers\ZipDownloadController;
 use App\Http\Middleware\EnsureModuleAccess;
 use App\Livewire\Admin;
 use App\Livewire\Dashboard;
@@ -11,6 +12,7 @@ use App\Livewire\Library\FileLibraryPage;
 use App\Livewire\Modules\ModuleHome;
 use App\Livewire\Modules\WizardHost;
 use App\Livewire\PilihProdi;
+use App\Livewire\Sessions\History;
 use App\Livewire\Sessions\SessionShow;
 use Illuminate\Support\Facades\Route;
 
@@ -34,7 +36,10 @@ Route::middleware('auth')->group(function () {
             Route::get('/sesi/{session}/wizard', WizardHost::class)->name('wizard');
         });
 
+        Route::get('/riwayat', History::class)->name('history');
         Route::get('/sesi/{session}', SessionShow::class)->name('sessions.show');
+        Route::get('/sesi/{session}/zip', [ZipDownloadController::class, 'session'])->name('sessions.zip');
+        Route::get('/sesi/{session}/mk/{item}/zip', [ZipDownloadController::class, 'item'])->name('sessions.zip.item');
         Route::get('/dokumen/{document}/unduh', DocumentDownloadController::class)->name('documents.download');
 
         Route::get('/pustaka-berkas', FileLibraryPage::class)->name('library.files');
