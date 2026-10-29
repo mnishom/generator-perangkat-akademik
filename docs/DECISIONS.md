@@ -124,3 +124,15 @@ Berdasarkan Template RPS, Template Kontrak Perkuliahan, dan Template Silabus Edi
 ## D-018 · Platform composer dikunci ke PHP 8.2
 
 `config.platform.php = 8.2.0` di `composer.json` memastikan `composer.lock` hanya berisi paket yang kompatibel dengan PHP 8.2, versi minimum yang didukung (server cPanel dan CI). Tanpa ini, lock yang dibuat di PHP 8.3 sempat memuat `laravel/pint` v1.32.1 (butuh PHP ≥ 8.3), sehingga `composer install` gagal di PHP 8.2.
+
+## D-019 · Penyesuaian dengan dokumen kurikulum nyata (S1 Akuntansi)
+
+Dari "DRAF Panduan Kurikulum OBE Prodi S1 AKUNTANSI (Final 2026).pdf" (103 halaman):
+
+- **Peminatan:** semester 5 memiliki empat peminatan, dan MK bersama tercantum di setiap tabel peminatan. Skema data MK kini memiliki `peminatan` (kosong = MK wajib). MK berkode **dan** bernama sama digabung menjadi satu entri dengan peminatan disatukan; kode sama dengan nama berbeda tetap ditandai "Kode MK ganda".
+- **Total SKS dihitung per jalur** (MK wajib + MK satu peminatan) dan dibandingkan dengan total SKS dokumen (144), bukan jumlah seluruh MK.
+- **CPL per MK** tidak tertulis terpisah, hanya tersirat dari Peta Bobot CPMK→CPL. Bila kosong, CPL MK diturunkan dari pemetaan CPMK. Bobot per CPL disimpan di `cpmk.bobot_cpl`, ditampilkan di `{{data_mk}}` (mis. "CPL5 (25%)"), dan dipakai sebagai acuan Peta Kontribusi/proporsi penilaian RPS. Di editor ditulis `CPL1:25, CPL6:5`.
+- **Bahan kajian** di dokumen hanya berupa kode (BK93); ekstraksi diminta menulis "kode – nama" dari tabel bahan kajian.
+- **Dokumen tidak memuat deskripsi per MK.** Bila data deskripsi kosong, RPS/Silabus menyusun deskripsi singkat yang diturunkan hanya dari CPMK dan bahan kajian.
+- **Beda data antar-tabel** (mis. SKS SAK2022 di tabel Distribusi = 2, di tabel Organisasi = 3): ekstraksi memakai tabel distribusi/sebaran per semester dan mencatat perbedaannya di `catatan_ekstraksi`, yang tampil sebagai peringatan pada langkah verifikasi.
+- Ekstraksi mengabaikan contoh RPS/silabus yang dilampirkan di dalam dokumen kurikulum.

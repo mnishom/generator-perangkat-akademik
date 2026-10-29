@@ -75,8 +75,13 @@ class CurriculumEditor extends Component
             'semester' => $mk['semester'],
             'jenis' => $mk['jenis'],
             'prasyarat' => implode(', ', $mk['prasyarat']),
+            'peminatan' => implode(', ', $mk['peminatan'] ?? []),
             'cpl' => array_column($mk['cpl'], 'kode'),
-            'cpmk' => array_map(fn ($c) => ['kode' => $c['kode'], 'rumusan' => $c['rumusan'], 'cpl' => implode(', ', $c['cpl'])], $mk['cpmk']),
+            // "CPL1:25, CPL6:5" — bobot opsional.
+            'cpmk' => array_map(fn ($c) => ['kode' => $c['kode'], 'rumusan' => $c['rumusan'], 'cpl' => implode(', ', array_map(
+                fn ($k) => isset($c['bobot_cpl'][$k]) ? $k.':'.rtrim(rtrim(number_format($c['bobot_cpl'][$k], 2, '.', ''), '0'), '.') : $k,
+                $c['cpl']
+            ))], $mk['cpmk']),
             'bahan_kajian' => implode("\n", $mk['bahan_kajian']),
             'deskripsi' => $mk['deskripsi'],
             'pustaka' => implode("\n", $mk['pustaka']),
@@ -142,9 +147,10 @@ class CurriculumEditor extends Component
             ],
             'semester' => $this->intOrNull($f['semester']),
             'prasyarat' => $split($f['prasyarat'] ?? ''),
+            'peminatan' => $split($f['peminatan'] ?? ''),
             'jenis' => $f['jenis'],
             'cpl' => array_values(array_map(fn ($k) => ['kode' => $k, 'rumusan' => $cplIndex[$k]['rumusan'] ?? ''], array_filter($f['cpl'] ?? []))),
-            'cpmk' => array_values(array_map(fn ($c) => ['kode' => trim($c['kode']), 'rumusan' => trim($c['rumusan']), 'cpl' => $split($c['cpl'] ?? '')], $f['cpmk'] ?? [])),
+            'cpmk' => array_values(array_map(fn ($c) => self::parseCpmkCpl(trim($c['kode']), trim($c['rumusan']), $split($c['cpl'] ?? '')), $f['cpmk'] ?? [])),
             'bahan_kajian' => $split(str_replace(';', "\n", $f['bahan_kajian'] ?? '')),
             'deskripsi' => trim((string) ($f['deskripsi'] ?? '')) ?: null,
             'pustaka' => array_values(array_filter(array_map('trim', preg_split('/\R/', (string) ($f['pustaka'] ?? ''))))),
@@ -209,6 +215,25 @@ class CurriculumEditor extends Component
         $this->data = $extraction->data;
 
         return $extraction;
+    }
+
+    /** "CPL1:25" → kode CPL + bobot. */
+    private static function parseCpmkCpl(string $kode, string $rumusan, array $tokens): array
+    {
+        $cpl = [];
+        $bobot = [];
+        foreach ($tokens as $t) {
+            [$code, $w] = array_pad(array_map('trim', explode(':', $t, 2)), 2, null);
+            if ($code === '') {
+                continue;
+            }
+            $cpl[] = $code;
+            if (is_numeric($w)) {
+                $bobot[$code] = (float) $w;
+            }
+        }
+
+        return ['kode' => $kode, 'rumusan' => $rumusan, 'cpl' => $cpl, 'bobot_cpl' => $bobot];
     }
 
     private function intOrNull(mixed $v): ?int

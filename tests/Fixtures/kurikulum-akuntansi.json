@@ -1,0 +1,43 @@
+{
+  "prodi": {"nama": "S-1 Akuntansi", "jenjang": "Sarjana", "total_sks": 29},
+  "catatan_ekstraksi": ["SAK2022: tabel Distribusi Mata Kuliah mencantumkan 2 SKS, tabel Organisasi Mata Kuliah 3 SKS; dipakai 2 SKS (tabel distribusi)."],
+  "profil_lulusan": [{"kode": "PL1", "deskripsi": "Akuntan"}, {"kode": "PL2", "deskripsi": "Auditor"}, {"kode": "PL3", "deskripsi": "Analis Data Keuangan"}],
+  "cpl": [
+    {"kode": "CPL1", "rumusan": "Lulusan mampu menguasai konsep, teori, prinsip, standar, dan regulasi di bidang akuntansi keuangan, akuntansi manajemen, auditing, perpajakan, serta sistem informasi akuntansi."},
+    {"kode": "CPL2", "rumusan": "Lulusan mampu menyusun dan menyajikan laporan keuangan, melaksanakan kewajiban perpajakan, menerapkan prosedur audit dasar."},
+    {"kode": "CPL3", "rumusan": "Lulusan mampu menganalisis dan mengevaluasi permasalahan akuntansi dan bisnis secara kritis dan sistematis berbasis data."},
+    {"kode": "CPL4", "rumusan": "Lulusan mampu memanfaatkan teknologi digital, sistem informasi akuntansi, dan analitika data keuangan."},
+    {"kode": "CPL5", "rumusan": "Lulusan mampu berkomunikasi secara efektif, bekerja secara kolaboratif dalam tim multidisiplin."},
+    {"kode": "CPL6", "rumusan": "Lulusan mampu menunjukkan integritas, etika profesi, tanggung jawab sosial, serta kemampuan kepemimpinan."}
+  ],
+  "mata_kuliah": [
+    {"kode": "SAK2001", "nama": "PENDIDIKAN AGAMA", "sks": {"total": 2, "teori": 2, "praktikum": 0}, "semester": 1, "peminatan": [], "jenis": "teori", "cpl": [],
+     "cpmk": [
+       {"kode": "CPMK1", "rumusan": "Mahasiswa mampu menjelaskan konsep dasar nilai keimanan dan etika dalam konteks kehidupan pribadi dan profesional.", "cpl": [], "bobot_cpl": {"CPL5": 25, "CPL6": 5}},
+       {"kode": "CPMK2", "rumusan": "Mahasiswa mampu menganalisis permasalahan etika berdasarkan studi kasus.", "cpl": [], "bobot_cpl": {"CPL5": 15, "CPL6": 20}},
+       {"kode": "CPMK3", "rumusan": "Mahasiswa mampu menunjukkan perilaku bertanggung jawab dan berintegritas.", "cpl": [], "bobot_cpl": {"CPL5": 10, "CPL6": 25}}
+     ],
+     "bahan_kajian": ["BK93 – Etika dan Nilai Keagamaan", "BK103 – Integritas Profesional"], "deskripsi": null, "pustaka": []},
+    {"kode": "SAK3010", "nama": "PRAKTIKUM AKUNTANSI PENGANTAR", "sks": {"total": 3, "teori": 0, "praktikum": 3}, "semester": 2, "peminatan": [], "jenis": "praktikum", "cpl": [],
+     "cpmk": [{"kode": "CPMK30", "rumusan": "Mahasiswa mampu menyusun siklus akuntansi perusahaan jasa dan dagang.", "cpl": ["CPL2"], "bobot_cpl": {"CPL2": 60}},
+              {"kode": "CPMK31", "rumusan": "Mahasiswa mampu menggunakan aplikasi akuntansi untuk pencatatan transaksi.", "cpl": ["CPL4"], "bobot_cpl": {"CPL4": 40}}],
+     "bahan_kajian": ["BK10 – Siklus Akuntansi"], "deskripsi": null, "pustaka": []},
+    {"kode": "SAK3035", "nama": "AKUNTANSI KEUANGAN LANJUTAN 1", "sks": {"total": 3, "teori": 3, "praktikum": 0}, "semester": 5, "peminatan": ["Akuntansi Keuangan"], "jenis": "teori", "cpl": [],
+     "cpmk": [{"kode": "CPMK100", "rumusan": "Mahasiswa mampu menyusun laporan keuangan konsolidasian.", "cpl": ["CPL1", "CPL2"], "bobot_cpl": {"CPL1": 40, "CPL2": 60}}],
+     "bahan_kajian": ["BK20 – Akuntansi Keuangan Lanjutan"], "deskripsi": null, "pustaka": []},
+    {"kode": "SAK3035", "nama": "AKUNTANSI KEUANGAN LANJUTAN 1", "sks": {"total": 3, "teori": 3, "praktikum": 0}, "semester": 5, "peminatan": ["Auditing"], "jenis": "teori", "cpl": [],
+     "cpmk": [], "bahan_kajian": [], "deskripsi": null, "pustaka": []},
+    {"kode": "SAK3048", "nama": "AKUNTANSI KEUANGAN LANJUTAN II", "sks": {"total": 3, "teori": 3, "praktikum": 0}, "semester": 5, "peminatan": ["Akuntansi Keuangan"], "jenis": "teori", "cpl": [],
+     "cpmk": [{"kode": "CPMK120", "rumusan": "Mahasiswa mampu menganalisis transaksi valuta asing dan derivatif.", "cpl": ["CPL3"], "bobot_cpl": {"CPL3": 100}}],
+     "bahan_kajian": ["BK21 – Akuntansi Valuta Asing"], "deskripsi": null, "pustaka": []},
+    {"kode": "SAK3054", "nama": "AUDIT SISTEM INFORMASI", "sks": {"total": 3, "teori": 3, "praktikum": 0}, "semester": 5, "peminatan": ["Auditing"], "jenis": "teori", "cpl": [],
+     "cpmk": [{"kode": "CPMK130", "rumusan": "Mahasiswa mampu mengevaluasi pengendalian sistem informasi.", "cpl": ["CPL4"], "bobot_cpl": {"CPL4": 100}}],
+     "bahan_kajian": ["BK40 – Audit TI"], "deskripsi": null, "pustaka": []},
+    {"kode": "SAK1244", "nama": "MAGANG PROFESIONAL AKUNTANSI", "sks": {"total": 12, "teori": 0, "praktikum": 12}, "semester": 6, "peminatan": [], "jenis": "magang_pkl", "cpl": [],
+     "cpmk": [{"kode": "CPMK140", "rumusan": "Mahasiswa mampu menerapkan praktik akuntansi di dunia kerja.", "cpl": ["CPL2", "CPL6"], "bobot_cpl": {"CPL2": 70, "CPL6": 30}}],
+     "bahan_kajian": ["BK90 – Praktik Profesional"], "deskripsi": null, "pustaka": []},
+    {"kode": "SAK6058", "nama": "TUGAS AKHIR", "sks": {"total": 6, "teori": 0, "praktikum": 6}, "semester": 8, "peminatan": [], "jenis": "tugas_akhir", "cpl": [],
+     "cpmk": [{"kode": "CPMK150", "rumusan": "Mahasiswa mampu menyusun karya ilmiah akuntansi.", "cpl": ["CPL3", "CPL5"], "bobot_cpl": {"CPL3": 60, "CPL5": 40}}],
+     "bahan_kajian": ["BK95 – Metodologi Penelitian"], "deskripsi": null, "pustaka": []}
+  ]
+}

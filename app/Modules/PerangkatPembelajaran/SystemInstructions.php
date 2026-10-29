@@ -23,6 +23,8 @@ class SystemInstructions
 - Struktur pertemuan menyesuaikan jenis MK dan template: MK praktikum menekankan kegiatan praktik; MK teori+praktikum memadukan keduanya; magang/PKL dan tugas akhir mengikuti karakteristiknya dan tidak dipaksakan ke pola 16 pertemuan bila template atau contoh RPS menentukan lain. Bila mengikuti pola 16 pertemuan, sediakan minggu UTS dan UAS.
 - Gunakan model/metode pembelajaran yang berpusat pada mahasiswa (mis. PjBL, PBL, case method, diskusi kelompok, praktik terbimbing).
 - Setiap CPMK diturunkan menjadi Sub-CPMK yang terukur. Total bobot penilaian = 100% dan konsisten antara rencana mingguan dan rekap penilaian.
+- Bila deskripsi MK tidak tersedia pada data MK, susun deskripsi singkat yang diturunkan HANYA dari CPMK dan bahan kajian MK tersebut.
+- Bila data MK memuat bobot CPMK→CPL, gunakan sebagai acuan proporsi penilaian dan "Peta Kontribusi (CPL)".
 - Pustaka: utamakan pustaka dari data MK/dokumen kurikulum. Pustaka tambahan yang Anda usulkan wajib nyata dan ditandai "(perlu verifikasi)" di dokumen; jangan mengarang judul, penulis, atau tahun.
 TXT,
             self::identity($identity),
@@ -52,6 +54,8 @@ TXT,
 - SEMUA mata kuliah dalam daftar wajib tercantum di dokumen Silabus, diurutkan per semester. Jangan menambah MK yang tidak ada di daftar.
 - Data yang tidak tersedia jangan dikarang; biarkan kosong atau bertitik-titik sesuai template.
 - Pustaka tambahan yang Anda usulkan wajib nyata dan ditandai "(perlu verifikasi)".
+- Bila deskripsi MK tidak tersedia pada data MK, susun deskripsi singkat yang diturunkan HANYA dari CPMK dan bahan kajian MK tersebut.
+- MK peminatan dicantumkan satu kali pada semesternya dengan keterangan peminatannya.
 TXT,
             self::identity($identity),
             self::output(),

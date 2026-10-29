@@ -101,14 +101,26 @@ class AnomalyDetector
         }
 
         $declared = $data['prodi']['total_sks'] ?? null;
-        if ($declared && $totalSks !== (int) $declared) {
+        $tracks = CurriculumData::sksPerTrack($data['mata_kuliah'] ?? []);
+        if (count($tracks) > 1 || array_key_first($tracks) !== 'semua') {
+            // Kurikulum berpeminatan: total dihitung per jalur (MK wajib + MK satu peminatan).
+            $totalSks = max($tracks);
+            foreach ($tracks as $name => $sum) {
+                if ($declared && $sum !== (int) $declared) {
+                    $global[] = ['level' => 'error', 'message' => "Jumlah SKS jalur peminatan {$name} ({$sum}) tidak sama dengan total SKS pada dokumen kurikulum ({$declared})."];
+                }
+            }
+        } elseif ($declared && $totalSks !== (int) $declared) {
             $global[] = ['level' => 'error', 'message' => "Jumlah SKS seluruh MK ({$totalSks}) tidak sama dengan total SKS pada dokumen kurikulum ({$declared})."];
+        }
+        foreach ($data['catatan_ekstraksi'] ?? [] as $note) {
+            $global[] = ['level' => 'warning', 'message' => 'Catatan ekstraksi: '.$note];
         }
         if (! ($data['mata_kuliah'] ?? [])) {
             $global[] = ['level' => 'error', 'message' => 'Tidak ada mata kuliah yang terbaca.'];
         }
 
-        return ['global' => $global, 'courses' => $courses, 'total_sks' => $totalSks];
+        return ['global' => $global, 'courses' => $courses, 'total_sks' => $totalSks, 'tracks' => $tracks];
     }
 
     public function errorCount(array $anomalies): int
