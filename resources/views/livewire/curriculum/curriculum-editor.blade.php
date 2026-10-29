@@ -2,7 +2,11 @@
     {{-- Ringkasan --}}
     <div class="grid gap-3 sm:grid-cols-4">
         <div class="card p-4"><p class="text-xs text-zinc-500">Mata kuliah</p><p class="text-2xl font-semibold">{{ count($data['mata_kuliah']) }}</p></div>
-        <div class="card p-4"><p class="text-xs text-zinc-500">Total SKS (dijumlahkan)</p><p class="text-2xl font-semibold">{{ $anomalies['total_sks'] ?? '—' }} <span class="text-sm font-normal text-zinc-500">/ dokumen: {{ $data['prodi']['total_sks'] ?? '—' }}</span></p></div>
+        <div class="card p-4"><p class="text-xs text-zinc-500">Total SKS (dijumlahkan)</p><p class="text-2xl font-semibold">{{ $anomalies['total_sks'] ?? '—' }} <span class="text-sm font-normal text-zinc-500">/ dokumen: {{ $data['prodi']['total_sks'] ?? '—' }}</span></p>
+            @if (count($anomalies['tracks'] ?? []) > 1 || array_key_first($anomalies['tracks'] ?? ['semua' => 0]) !== 'semua')
+                <p class="mt-1 text-xs text-zinc-500">per jalur: @foreach ($anomalies['tracks'] as $t => $n){{ $t }} {{ $n }}@if (! $loop->last), @endif @endforeach</p>
+            @endif
+        </div>
         <div class="card p-4"><p class="text-xs text-zinc-500">CPL prodi</p><p class="text-2xl font-semibold">{{ count($data['cpl']) }}</p></div>
         <div class="card p-4"><p class="text-xs text-zinc-500">Catatan galat</p><p @class(['text-2xl font-semibold', 'text-red-600' => $errorCount, 'text-emerald-600' => ! $errorCount])>{{ $errorCount }}</p></div>
     </div>
@@ -41,7 +45,7 @@
                 <thead class="bg-zinc-50 text-left text-xs uppercase tracking-wide text-zinc-500 dark:bg-zinc-800/50">
                     <tr>
                         @if ($selectable)<th class="w-8 px-3 py-3"></th>@endif
-                        <th class="px-3 py-3">Kode</th><th class="px-3 py-3">Nama MK</th><th class="px-3 py-3">SKS</th><th class="px-3 py-3">Smt</th><th class="px-3 py-3">Jenis</th><th class="px-3 py-3">CPL / CPMK</th><th class="px-3 py-3">Catatan</th><th class="px-3 py-3"></th>
+                        <th class="px-3 py-3">Kode</th><th class="px-3 py-3">Nama MK</th><th class="px-3 py-3">SKS</th><th class="px-3 py-3">Smt</th><th class="px-3 py-3">Jenis</th><th class="px-3 py-3">Peminatan</th><th class="px-3 py-3">CPL / CPMK</th><th class="px-3 py-3">Catatan</th><th class="px-3 py-3"></th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-zinc-100 dark:divide-zinc-800">
@@ -57,6 +61,7 @@
                             </td>
                             <td class="px-3 py-2">{{ $mk['semester'] ?? '—' }}</td>
                             <td class="whitespace-nowrap px-3 py-2">{{ $jenisLabels[$mk['jenis']] ?? $mk['jenis'] }}</td>
+                            <td class="px-3 py-2 text-xs">{{ ($mk['peminatan'] ?? []) ? implode(', ', $mk['peminatan']) : 'Wajib' }}</td>
                             <td class="px-3 py-2 text-xs">{{ count($mk['cpl']) }} CPL · {{ count($mk['cpmk']) }} CPMK</td>
                             <td class="px-3 py-2">
                                 @foreach ($flags as $f)
@@ -66,7 +71,7 @@
                             <td class="px-3 py-2 text-right"><button wire:click="edit({{ $i }})" class="text-marun-700 hover:underline dark:text-krem-200">Ubah</button></td>
                         </tr>
                     @empty
-                        <tr><td colspan="9" class="px-4 py-8 text-center text-zinc-500">Tidak ada MK.</td></tr>
+                        <tr><td colspan="10" class="px-4 py-8 text-center text-zinc-500">Tidak ada MK.</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -120,7 +125,8 @@
                     <div><label class="label">Jenis</label><select wire:model="form.jenis" class="input">@foreach ($jenisLabels as $k => $l)<option value="{{ $k }}">{{ $l }}</option>@endforeach</select></div>
                 </div>
                 <div class="grid gap-3 sm:grid-cols-2">
-                    <div><label class="label">MK prasyarat (pisahkan koma)</label><input wire:model="form.prasyarat" class="input"></div>
+                    <div class="space-y-3"><div><label class="label">MK prasyarat (pisahkan koma)</label><input wire:model="form.prasyarat" class="input"></div>
+                        <div><label class="label">Peminatan (pisahkan koma; kosong = wajib)</label><input wire:model="form.peminatan" class="input"></div></div>
                     <div>
                         <label class="label">CPL yang dibebankan</label>
                         <div class="flex max-h-28 flex-wrap gap-2 overflow-y-auto rounded-lg border border-zinc-200 p-2 text-sm dark:border-zinc-700">
@@ -139,7 +145,7 @@
                             <div class="flex flex-wrap gap-2 sm:flex-nowrap" wire:key="fcpmk-{{ $ci }}">
                                 <input wire:model="form.cpmk.{{ $ci }}.kode" class="input sm:w-28" placeholder="Kode">
                                 <textarea wire:model="form.cpmk.{{ $ci }}.rumusan" rows="2" class="input flex-1" placeholder="Rumusan CPMK"></textarea>
-                                <input wire:model="form.cpmk.{{ $ci }}.cpl" class="input sm:w-36" placeholder="CPL (koma)">
+                                <input wire:model="form.cpmk.{{ $ci }}.cpl" class="input sm:w-36" placeholder="CPL1:25, CPL6:5" title="Kode CPL, opsional dengan bobot (%)">
                                 <button type="button" wire:click="removeCpmk({{ $ci }})" class="text-red-600" title="Hapus">&times;</button>
                             </div>
                             @error("form.cpmk.$ci.kode")<p class="text-xs text-red-600">{{ $message }}</p>@enderror

@@ -192,10 +192,18 @@ Baca dokumen kurikulum OBE "{$filename}" dan ekstrak data terstruktur untuk SETI
 
 Untuk setiap MK: kode MK, nama MK, bobot SKS (total dan rincian T/P/L/S bila tersedia), semester, MK prasyarat, jenis MK (teori, praktikum, teori_praktikum, magang_pkl, tugas_akhir, atau lainnya — tentukan dari rincian SKS dan nama/deskripsi MK), daftar CPL yang dibebankan (kode dan rumusan), daftar CPMK (kode, rumusan, dan kode CPL yang dipetakan), bahan kajian, deskripsi MK, serta pustaka bila tercantum.
 
+Ketentuan penting (dokumen kurikulum tiap prodi berbeda tata letaknya):
+- SKS dan semester: utamakan tabel distribusi/sebaran MK per semester. Bila tabel lain (mis. organisasi/kelompok MK) mencantumkan angka berbeda, tetap pakai tabel distribusi dan tulis perbedaannya di `catatan_ekstraksi`.
+- Peminatan/konsentrasi: bila sebuah semester memiliki beberapa tabel peminatan, cantumkan setiap MK SATU KALI saja. Isi `peminatan` dengan semua peminatan yang memuat MK tersebut; MK yang muncul di semua peminatan semester itu juga diisi semua nama peminatannya. MK wajib di luar peminatan: `peminatan` kosong.
+- CPL per MK: bila tidak tertulis terpisah, turunkan dari tabel pemetaan/bobot CPMK→CPL (CPL yang memiliki bobot pada CPMK MK tersebut). Simpan bobotnya di `bobot_cpl` setiap CPMK.
+- Bahan kajian: bila hanya ditulis kode (mis. "BK93; BK103"), cari namanya di tabel bahan kajian dan tulis "kode – nama".
+- Abaikan contoh/format RPS, silabus, atau dokumen lain yang dilampirkan di dalam dokumen kurikulum.
+- Data yang tidak ada di dokumen (mis. deskripsi MK, prasyarat, pustaka) biarkan null/kosong; jangan dikarang.
+
 Tulis hasilnya sebagai JSON UTF-8 yang valid ke berkas `\$OUTPUT_DIR/{$out}` dengan skema berikut:
 {$schema}
 
-Setelah berkas tersimpan, balas singkat: jumlah MK, jumlah CPL, total SKS hasil penjumlahan, dan total SKS yang tertulis di dokumen (bila ada).
+Setelah berkas tersimpan, balas singkat: jumlah MK, jumlah CPL, jumlah peminatan, total SKS per jalur (MK wajib + satu peminatan), dan total SKS yang tertulis di dokumen (bila ada).
 TXT;
     }
 }
