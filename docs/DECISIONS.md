@@ -120,3 +120,7 @@ Berdasarkan Template RPS, Template Kontrak Perkuliahan, dan Template Silabus Edi
 - **Skill `pdf`** ikut dimuat bila salah satu berkas masukan berformat PDF (mis. contoh RPS).
 - **Instruksi sistem ditambah aturan pengisian template:** ganti semua petunjuk/penanda; ganti baris contoh bawaan template (mis. contoh Sub-CPMK, minggu, rubrik); pertahankan catatan baku ("Keterangan", "*)"); isi `T=, P=, L=, S=`; tambahkan baris tabel dengan format yang sama. Untuk Silabus: sampul dan halaman pengesahan sekali di awal, lalu blok isian per MK digandakan untuk setiap MK.
 - **Dokumen kurikulum berbeda di setiap prodi.** Aplikasi tidak bergantung pada tata letak dokumen kurikulum tertentu: Claude mengekstrak ke skema JSON yang sama, lalu prodi memverifikasinya di tabel.
+
+## D-018 · Platform composer dikunci ke PHP 8.2
+
+`config.platform.php = 8.2.0` di `composer.json` memastikan `composer.lock` hanya berisi paket yang kompatibel dengan PHP 8.2, versi minimum yang didukung (server cPanel dan CI). Tanpa ini, lock yang dibuat di PHP 8.3 sempat memuat `laravel/pint` v1.32.1 (butuh PHP ≥ 8.3), sehingga `composer install` gagal di PHP 8.2.
