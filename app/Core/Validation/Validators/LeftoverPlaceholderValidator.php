@@ -17,7 +17,16 @@ class LeftoverPlaceholderValidator implements ValidatorContract
         'dosen', 'pengampu', 'nama', 'nip', 'nidn', 'nik', 'tanda tangan', 'ttd', 'ketua', 'kaprodi', 'dekan',
         'koordinator', 'gkm', 'penjaminan', 'tanggal', 'tgl', 'nomor', 'no.', 'kode dokumen', 'revisi', 'disahkan',
         'diperiksa', 'disetujui', 'disusun', 'mahasiswa', 'kelas', 'ruang', 'waktu', 'hari', 'telp', 'email', 'paraf',
+        'fakultas', 'program studi', 'kode', 'edisi', 'otorisasi', 'pengembang', 'penanggung jawab', 'jabatan',
     ];
+
+    /** Teks petunjuk/penanda template yang wajib sudah diganti isi. */
+    public const EXPLICIT = '/\\[\\s*(isi|isikan|diisi|tuliskan|tulis|masukkan|ketik|susun|minimal|kode mata kuliah|sks mata kuliah|semester ganjil|nama program studi|nama mata kuliah)\\b[^\\]]*\\]?'
+        .'|\\(\\s*petunjuk[^)]*\\)?'
+        .'|^\\s*petunjuk pengisian'
+        .'|\\btulis (materi|pustaka)\\b'
+        .'|\\bmampu\\s*(…|\\.{3,})'
+        .'|<(isi|diisi)[^>]*>|\\{\\{[^}]*\\}\\}|lorem ipsum|\\bXXX+\\b/iu';
 
     public function validate(ValidationContext $context): array
     {
@@ -33,8 +42,9 @@ class LeftoverPlaceholderValidator implements ValidatorContract
             if ($trim === '') {
                 continue;
             }
-            $explicit = preg_match('/\[(isi|diisi|tuliskan|masukkan|ketik)[^\]]*\]|<(isi|diisi)[^>]*>|\{\{[^}]*\}\}|lorem ipsum|\bXXX+\b/iu', $trim);
-            $dotted = preg_match('/(…{3,}|\.{6,}|_{6,})/u', $trim);
+            $explicit = preg_match(self::EXPLICIT, $trim);
+            // Titik-titik panjang, atau sel tabel yang hanya berisi titik/elipsis (mis. "….").
+            $dotted = preg_match('/(…{3,}|\.{6,}|_{6,})|(^|\t)\s*[.…]{2,}\s*(\t|$)/u', $trim);
 
             if ($explicit || ($dotted && ! $this->isIdentityLine($trim))) {
                 $found[] = mb_strimwidth(preg_replace('/\s+/u', ' ', $trim), 0, 90, '…');
@@ -53,13 +63,18 @@ class LeftoverPlaceholderValidator implements ValidatorContract
     private function isIdentityLine(string $line): bool
     {
         $lower = mb_strtolower($line);
+
+        // Data yang selalu tersedia (nama MK, tahun akademik) tidak boleh dibiarkan bertitik-titik.
+        if (preg_match('/(mata kuliah|tahun akademik)\s*[.…_]{3,}/u', $lower)) {
+            return false;
+        }
         foreach (self::IDENTITY_WORDS as $w) {
             if (str_contains($lower, $w)) {
                 return true;
             }
         }
 
-        // Baris yang seluruhnya titik/garis (tempat tanda tangan) dianggap identitas.
-        return preg_match('/^[\s.…_:\-()]+$/u', $line) === 1;
+        // Tempat tanda tangan: baris berisi titik/garis di dalam tanda kurung, mis. "(………)".
+        return preg_match('/^[\s.…_:\-()]+$/u', $line) === 1 && str_contains($line, '(');
     }
 }

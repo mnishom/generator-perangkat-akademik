@@ -108,3 +108,15 @@ Spesifikasi meminta pemeriksaan "komponen dan bobot penilaian di laporan Kontrak
 - SKS dianggap tercantum bila pola seperti "3 SKS", "SKS: 3", atau "Bobot … 3" ditemukan.
 - Penanda template yang tersisa: "[isi …]", "<isi …>", "{{…}}", "lorem ipsum", "XXX", serta baris bertitik-titik/bergaris bawah panjang, kecuali pada baris identitas (nama, dosen, NIP/NIDN, tanda tangan, ketua, dekan, tanggal, nomor, dsb.).
 - Laporan Claude juga diperiksa silang: kode MK, SKS, `cpmk_digunakan`, total bobot 100%, `bobot_konsisten`, `cpmk_tanpa_subcpmk`, `konsisten_dengan_rps`, `mk_terlewat`, dan `jumlah_mk_di_dokumen`.
+
+## D-017 · Penyesuaian terhadap template resmi (docs/referensi)
+
+Berdasarkan Template RPS, Template Kontrak Perkuliahan, dan Template Silabus Edisi 1 Tahun 2025, serta contoh RPS (PDF):
+
+- **Ekstraksi teks:** satu baris tabel DOCX = satu baris teks (sel dipisah tab), sehingga label dan isinya tetap bersama (mis. "Dosen Pengampu : ……").
+- **Penanda isian yang dikenali** (selain titik-titik): `[tuliskan …]`, `[kode mata kuliah]`, `[nama program studi]`, `(Petunjuk: …)`, "Petunjuk pengisian", "Tulis materi/pustaka …", "… mampu….", dan sel tabel yang hanya berisi "….".
+- **Boleh tetap kosong:** baris kop (Fakultas/Program Studi), kontrol dokumen (Kode, Edisi, Tanggal, Revisi), otorisasi, dosen, hari/waktu/kelas, dan tempat tanda tangan "(………)". "Mata Kuliah ……" dan "tahun akademik ……" tetap ditandai karena datanya selalu tersedia.
+- **SKS** juga dikenali dalam format template `T=, P=3, L=, S=`. Lolos bila jumlahnya sama dengan total SKS dan rinciannya sesuai data MK.
+- **Skill `pdf`** ikut dimuat bila salah satu berkas masukan berformat PDF (mis. contoh RPS).
+- **Instruksi sistem ditambah aturan pengisian template:** ganti semua petunjuk/penanda; ganti baris contoh bawaan template (mis. contoh Sub-CPMK, minggu, rubrik); pertahankan catatan baku ("Keterangan", "*)"); isi `T=, P=, L=, S=`; tambahkan baris tabel dengan format yang sama. Untuk Silabus: sampul dan halaman pengesahan sekali di awal, lalu blok isian per MK digandakan untuk setiap MK.
+- **Dokumen kurikulum berbeda di setiap prodi.** Aplikasi tidak bergantung pada tata letak dokumen kurikulum tertentu: Claude mengekstrak ke skema JSON yang sama, lalu prodi memverifikasinya di tabel.

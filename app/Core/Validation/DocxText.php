@@ -36,9 +36,18 @@ class DocxText
     public static function xmlToText(string $xml): string
     {
         $xml = preg_replace('#<w:tab[^>]*/>#', "\t", $xml);
-        $xml = preg_replace('#<w:(br|cr)[^>]*/>#', "\n", $xml);
+        $xml = preg_replace('#<w:(br|cr)[^>]*/>#', ' ', $xml);
+
+        // Satu baris tabel = satu baris teks (sel dipisah tab), agar label dan isinya tetap bersama.
+        $xml = preg_replace_callback('#<w:tr[ >].*?</w:tr>#s', function ($m) {
+            $row = preg_replace('#</w:p>#', ' ', $m[0]);
+            $row = preg_replace('#</w:tc>#', "\t", $row);
+            $row = html_entity_decode(strip_tags($row), ENT_QUOTES | ENT_XML1, 'UTF-8');
+
+            return '<w:p>'.htmlspecialchars(trim(preg_replace('/ {2,}/', ' ', $row)), ENT_XML1).'</w:p>';
+        }, $xml);
+
         $xml = preg_replace('#</w:p>#', "\n", $xml);
-        $xml = preg_replace('#</w:tc>#', "\t", $xml);
         $text = html_entity_decode(strip_tags($xml), ENT_QUOTES | ENT_XML1, 'UTF-8');
         $text = preg_replace("/[ \t]+\n/", "\n", $text);
 

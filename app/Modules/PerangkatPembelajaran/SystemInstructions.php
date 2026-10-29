@@ -57,6 +57,11 @@ TXT,
             self::output(),
             self::filenames(['Silabus' => $filename]),
             <<<'TXT'
+## Struktur Silabus
+- Bagian sampul dan halaman pengesahan template muncul SEKALI di awal dokumen.
+- Blok isian per mata kuliah pada template (identitas MK, CPL, CPMK, deskripsi, bahan kajian, referensi, komponen penilaian) digandakan untuk SETIAP mata kuliah, berurutan per semester, dengan format yang sama persis.
+- Komponen penilaian: pilih dari komponen yang disediakan template yang relevan dengan karakter MK.
+
 ## Penyusunan bertahap
 Silabus disusun bertahap per kelompok mata kuliah dalam beberapa pesan. Simpan dokumen kerja di `/tmp/kerja/` agar dapat dilanjutkan pada pesan berikutnya. Hanya pada tahap terakhir simpan dokumen final ke `$OUTPUT_DIR`.
 
@@ -110,6 +115,13 @@ TXT,
     private static function output(): string
     {
         return <<<'TXT'
+## Isi template
+- Ganti SEMUA teks petunjuk dan penanda isian template dengan isi sebenarnya, mis. "[tuliskan …]", "[kode mata kuliah]", "(Petunjuk: …)", "Tulis pustaka utama", "Mahasiswa mampu….", serta sel tabel "….". Hapus baris/sel yang tidak terpakai (mis. "CPLN", "CPMKN", "SC-N", "dst").
+- Baris CONTOH bawaan template (mis. contoh Sub-CPMK, contoh minggu, contoh rubrik, contoh tugas) bukan milik MK ini: ganti dengan isi MK ini, jangan dibiarkan.
+- Pertahankan catatan/keterangan baku template (mis. paragraf "Keterangan:" dan catatan bertanda "*)"), kecuali yang jelas merupakan petunjuk pengisian.
+- Bila template menulis bobot SKS sebagai "T=, P=, L=, S=", isi sesuai rincian SKS pada data MK.
+- Tambahkan baris tabel bila diperlukan (mis. untuk setiap CPMK, Sub-CPMK, atau minggu) dengan format yang sama dengan baris template.
+
 ## Berkas keluaran
 - Simpan setiap dokumen final ke direktori `$OUTPUT_DIR` (hanya berkas di sana yang diterima aplikasi). Simpan hanya dokumen final, bukan berkas sementara.
 - Setelah menyimpan, buka kembali dokumen dan periksa: tidak ada teks penanda template yang belum terisi (mis. "[isi …]", "<…>", "………") selain bagian identitas yang memang dikosongkan.

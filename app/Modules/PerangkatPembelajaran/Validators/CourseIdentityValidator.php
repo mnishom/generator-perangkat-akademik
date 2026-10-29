@@ -37,7 +37,7 @@ class CourseIdentityValidator implements ValidatorContract
 
         if ($this->checkSks && ($sks = $mk['sks']['total'] ?? null)) {
             $pattern = '/(\b'.$sks.'\s*\(?\s*sks\b)|(\bsks\b[^0-9\n]{0,40}\b'.$sks.'\b)|(\bbobot\b[^0-9\n]{0,40}\b'.$sks.'\b)/iu';
-            $checks[] = preg_match($pattern, $text)
+            $checks[] = preg_match($pattern, $text) || $this->tplsMatches($text, $mk['sks'])
                 ? CheckResult::pass('sks', 'SKS sesuai', "{$sks} SKS")
                 : CheckResult::fail('sks', 'SKS sesuai', "Bobot {$sks} SKS tidak ditemukan dengan jelas di dokumen.");
         }
@@ -51,5 +51,30 @@ class CourseIdentityValidator implements ValidatorContract
         }
 
         return $checks;
+    }
+
+    /**
+     * Format template RPS: "T=1, P=2, L=, S=". Lolos bila ada isian yang jumlahnya sama
+     * dengan total SKS dan (bila data rinci tersedia) rinciannya sama.
+     */
+    private function tplsMatches(string $text, array $sks): bool
+    {
+        if (! preg_match_all('/\bT\s*=\s*(\d*)\s*[,;]?\s*P\s*=\s*(\d*)\s*[,;]?\s*L\s*=\s*(\d*)\s*[,;]?\s*S\s*=\s*(\d*)/u', $text, $m, PREG_SET_ORDER)) {
+            return false;
+        }
+        $expected = [$sks['teori'] ?? null, $sks['praktikum'] ?? null, $sks['lapangan'] ?? null, $sks['seminar'] ?? null];
+        $hasDetail = array_filter($expected, fn ($v) => $v !== null) !== [];
+
+        foreach ($m as $match) {
+            $parts = array_map(fn ($v) => $v === '' ? 0 : (int) $v, array_slice($match, 1, 4));
+            if (array_sum($parts) !== (int) $sks['total']) {
+                continue;
+            }
+            if (! $hasDetail || $parts === array_map(fn ($v) => (int) $v, $expected)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

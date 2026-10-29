@@ -248,7 +248,7 @@ class PerangkatPembelajaranModule implements DescribesPrompts, ModuleContract
             );
         }
 
-        return new JobPlan("mk:{$mk['kode']}", "{$mk['kode']} {$mk['nama']}", $steps, $item, ['docx']);
+        return new JobPlan("mk:{$mk['kode']}", "{$mk['kode']} {$mk['nama']}", $steps, $item, $this->skills($session, $roles));
     }
 
     private function silabusPlan(GenerationSession $session, array $names): JobPlan
@@ -289,7 +289,7 @@ class PerangkatPembelajaranModule implements DescribesPrompts, ModuleContract
             );
         }
 
-        return new JobPlan('silabus', 'Silabus Prodi', $steps, null, ['docx']);
+        return new JobPlan('silabus', 'Silabus Prodi', $steps, null, $this->skills($session, $roles));
     }
 
     /**
@@ -313,6 +313,14 @@ class PerangkatPembelajaranModule implements DescribesPrompts, ModuleContract
         }
 
         return $groups;
+    }
+
+    /** Skill docx selalu; tambah pdf bila ada berkas masukan berformat PDF. */
+    private function skills(GenerationSession $session, array $roles): array
+    {
+        $pdf = collect($this->files->sessionFiles($session))->only($roles)->contains(fn ($f) => $f->extension === 'pdf');
+
+        return $pdf ? ['docx', 'pdf'] : ['docx'];
     }
 
     /** Variabel tingkat sesi + nama berkas. */
