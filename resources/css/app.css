@@ -1,0 +1,68 @@
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+
+@source '../views';
+@source '../../app/Livewire';
+@source '../../app/Modules';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+    /* Identitas warna Universitas Harkat Negeri: marun #6e1b24 & krem #e3d3bd */
+    --color-marun-50: #fbf3f4;
+    --color-marun-100: #f6e4e6;
+    --color-marun-200: #edc9cd;
+    --color-marun-300: #dfa0a7;
+    --color-marun-400: #c96b76;
+    --color-marun-500: #a8404d;
+    --color-marun-600: #8c2c38;
+    --color-marun-700: #6e1b24;
+    --color-marun-800: #5a161e;
+    --color-marun-900: #4a141a;
+    --color-marun-950: #2a080c;
+
+    --color-krem-50: #faf7f2;
+    --color-krem-100: #f3ece1;
+    --color-krem-200: #e3d3bd;
+    --color-krem-300: #d4bc9b;
+    --color-krem-400: #c3a078;
+    --color-krem-500: #b4895d;
+}
+
+@utility btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-marun-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:focus-visible:ring-offset-zinc-900;
+}
+
+@utility btn-primary {
+    @apply btn bg-marun-700 text-white hover:bg-marun-800;
+}
+
+@utility btn-secondary {
+    @apply btn border border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-200 dark:hover:bg-zinc-700;
+}
+
+@utility btn-danger {
+    @apply btn bg-red-600 text-white hover:bg-red-700;
+}
+
+@utility card {
+    @apply rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900;
+}
+
+@utility input {
+    @apply block w-full rounded-lg border-zinc-300 text-sm shadow-sm focus:border-marun-500 focus:ring-marun-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100;
+}
+
+@utility label {
+    @apply mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300;
+}
+
+@utility badge {
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium;
+}
+
+[x-cloak] {
+    display: none !important;
+}
