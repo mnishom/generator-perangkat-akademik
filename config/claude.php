@@ -35,6 +35,19 @@ return [
 
     'effort' => env('ANTHROPIC_EFFORT', 'high'),
 
+    /*
+    | Prompt caching otomatis (cache_control tingkat atas). Menghemat biaya saat
+    | percakapan dilanjutkan di container yang sama (RPS → Kontrak, Silabus bertahap).
+    */
+    'auto_cache' => (bool) env('ANTHROPIC_AUTO_CACHE', true),
+
+    /*
+    | Fallback sisi server bila model menolak (refusal). "default" = rute otomatis.
+    | Kosongkan (ANTHROPIC_FALLBACKS=) untuk menonaktifkan.
+    */
+    'fallbacks' => env('ANTHROPIC_FALLBACKS', 'default') ?: null,
+    'fallbacks_beta' => env('ANTHROPIC_FALLBACKS_BETA', 'server-side-fallback-2026-07-01'),
+
     /* Batas pelanjutan `pause_turn` per panggilan generate. */
     'max_continuations' => (int) env('ANTHROPIC_MAX_CONTINUATIONS', 8),
 

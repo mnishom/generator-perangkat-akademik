@@ -128,7 +128,7 @@
                     </fieldset>
 
                     <fieldset class="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
-                        <legend class="px-1 text-sm font-medium">Batas pemakaian pengguna ini (kosong = ikut batas global)</legend>
+                        <legend class="px-1 text-sm font-medium">Batas pemakaian pengguna ini (kosong = tanpa batas khusus; batas global tetap berlaku)</legend>
                         <div class="grid gap-4 sm:grid-cols-3">
                             <div><label class="label">Generate / hari</label><input type="number" min="0" wire:model="form.max_generate_per_day" class="input"></div>
                             <div><label class="label">Generate / bulan</label><input type="number" min="0" wire:model="form.max_generate_per_month" class="input"></div>

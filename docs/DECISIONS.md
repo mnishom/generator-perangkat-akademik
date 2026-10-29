@@ -41,3 +41,31 @@ Utilitas komponen (`btn-primary`, `card`, `input`, dll.) didefinisikan dengan `@
 ## D-007 · Login cepat untuk pengembangan
 
 Route `/dev/login/{user}` hanya dimuat bila `APP_ENV=local` **dan** `DEV_LOGIN=true`. Route ini tidak pernah aktif di produksi.
+
+## D-008 · Arsitektur modular: inti vs modul
+
+- Modul berada di `app/Modules/<Nama>/` dan mengimplementasikan `App\Core\Modules\ModuleContract`. Modul aktif didaftarkan di `config/modules.php`. Menu, halaman modul (`/m/{module}`), panel admin modul, akses, sakelar, kuota, dan model per modul mengikuti daftar ini secara otomatis.
+- **Prioritas akses modul:** aturan per user > aturan per prodi > status aktif modul (tabel `modules` dan `module_access`).
+- **Pelaksana Job generik** (`GenerationRunner`) tidak mengenal jenis dokumen. Modul mengembalikan `JobPlan[]` dari `planJobs()`. Setiap `JobPlan` berisi langkah (`JobStep`) berurutan yang dijalankan dalam **satu container** dan **satu percakapan**.
+- **Tabel `generation_tasks`** (tambahan dari ERD awal): satu baris = satu Job antrean. Tabel ini menyimpan langkah yang sudah dirender, `current_step`, `container_id` + `container_expires_at`, dan percakapan. `container_id` sengaja disimpan di sini, bukan di `generation_items`, karena satu item dapat memiliki lebih dari satu Job (misalnya generate ulang), dan Job tingkat sesi (Silabus) tidak memiliki item.
+- **Dapat dilanjutkan:** status disimpan setelah setiap langkah. Job yang terputus (batas waktu PHP, proses dimatikan cPanel) dijalankan ulang oleh antrean dan melanjutkan dari `current_step`. Bila container sudah kedaluwarsa, Job memulai container baru dan mengunggah ulang masukan secara otomatis.
+- **Generate ulang / perbaikan otomatis** = menambahkan langkah baru ke task yang sama (`SessionLauncher::appendAndRun`), sehingga berjalan di container dan percakapan yang sama dan menghasilkan versi baru (`version` +1, `parent_id`) tanpa menghapus versi lama.
+- **Pemeriksaan di dalam Job** (`GenerationGuard`): status akun, akses modul, sakelar global, sakelar modul, dan kuota diperiksa sebelum setiap panggilan Claude. Bila ditolak, task berstatus `blocked` beserta alasannya.
+- **Batas Job bersamaan:** dihitung dari task `running` yang heartbeat-nya kurang dari 25 menit, dengan lock cache. Job yang belum mendapat slot di-*release* 30 detik. Galat sementara (429/5xx/529/koneksi) dicoba ulang dengan backoff eksponensial (maks. 6 kali). Galat permanen langsung menggagalkan task.
+- `DB_QUEUE_RETRY_AFTER` default 1500 detik (Job `timeout` 1200 detik), agar Job yang sedang berjalan tidak diambil worker lain.
+
+## D-009 · Arti batas pemakaian
+
+- **Global** dan **per modul** = anggaran total seluruh pengguna. **Per user** = batas pengguna tersebut. Ketiganya berlaku bersamaan.
+- Satu "generate" = satu panggilan generate yang tercatat di `ai_usages` (`kind = generate`), yaitu satu langkah Job. Token = input + output + cache read + cache write.
+- Estimasi biaya memakai harga di `config/claude.php`: cache read 0,1× dan cache write 1,25× harga input.
+
+## D-010 · Berkas masukan di Files API dikelola per sesi
+
+- Berkas pustaka diunggah ke Files API saat pertama dibutuhkan sebuah sesi, dan `file_id`-nya disimpan di `generation_sessions.options.remote_files`. Karena itu kolom `anthropic_file_id` di `library_files` tidak dipakai.
+- Nama berkas di container = nama asli unggahan (dibersihkan). Nama kembar diberi akhiran peran. Nama yang sama dipakai untuk variabel prompt `{{file_*}}`.
+- Setelah seluruh task sesi selesai, salinan di Files API dihapus bila pengaturan "hapus berkas" aktif. Bila dibutuhkan lagi (misalnya generate ulang pada container baru), berkas diunggah ulang otomatis.
+
+## D-011 · Ekstraksi teks DOCX untuk pemeriksaan
+
+Pemeriksaan lapis 2 membaca teks langsung dari XML DOCX (badan, tabel, header, footer, kotak teks) lewat `DocxText`. Cara ini lebih toleran dibanding pembaca PhpWord, yang kerap gagal pada dokumen dengan elemen yang tidak didukung. PhpWord tetap dipakai untuk membuat DOCX uji.
