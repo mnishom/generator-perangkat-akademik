@@ -95,7 +95,7 @@ class FakeClaudeDocumentClient extends ClaudeDocumentClient
         $outputFiles = [];
         foreach ($spec['files'] ?? [] as $name => $text) {
             $id = 'file_out_'.(++$this->fileSeq);
-            $this->files[$id] = is_string($text) && str_starts_with($text, 'PK') ? $text : self::docx($text);
+            $this->files[$id] = ! str_ends_with($name, '.docx') || str_starts_with($text, 'PK') ? $text : self::docx($text);
             $this->files[$id.'#name'] = $name;
             $outputFiles[] = ['file_id' => $id, 'filename' => $spec['omit_filename'] ?? false ? null : $name];
         }
