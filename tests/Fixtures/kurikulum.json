@@ -1,0 +1,47 @@
+{
+  "prodi": {"nama": "Teknik Informatika", "jenjang": "D4", "total_sks": 9},
+  "profil_lulusan": [{"kode": "PL1", "deskripsi": "Pengembang Perangkat Lunak"}],
+  "cpl": [
+    {"kode": "CPL01", "rumusan": "Mampu menerapkan pemikiran logis, kritis, dan sistematis."},
+    {"kode": "CPL02", "rumusan": "Mampu merancang dan membangun perangkat lunak berorientasi objek."}
+  ],
+  "mata_kuliah": [
+    {
+      "kode": "DTI3019", "nama": "Pemrograman Berorientasi Objek",
+      "sks": {"total": 3, "teori": 1, "praktikum": 2}, "semester": 3, "prasyarat": ["DTI1012"],
+      "jenis": "teori_praktikum",
+      "cpl": [{"kode": "CPL02", "rumusan": "Mampu merancang dan membangun perangkat lunak berorientasi objek."}],
+      "cpmk": [
+        {"kode": "CPMK0191", "rumusan": "Mampu menjelaskan konsep kelas dan objek.", "cpl": ["CPL02"]},
+        {"kode": "CPMK0192", "rumusan": "Mampu menerapkan pewarisan dan polimorfisme.", "cpl": ["CPL02"]}
+      ],
+      "bahan_kajian": ["Kelas dan objek", "Pewarisan", "Polimorfisme"],
+      "deskripsi": "MK ini membahas paradigma pemrograman berorientasi objek.",
+      "pustaka": ["Deitel, Java How to Program"]
+    },
+    {
+      "kode": "DTI1001", "nama": "Logika Informatika",
+      "sks": {"total": 2, "teori": 2}, "semester": 1, "prasyarat": [],
+      "jenis": "teori",
+      "cpl": [{"kode": "CPL01", "rumusan": "Mampu menerapkan pemikiran logis, kritis, dan sistematis."}],
+      "cpmk": [{"kode": "CPMK0011", "rumusan": "Mampu menyusun proposisi logika.", "cpl": ["CPL01"]}],
+      "bahan_kajian": ["Logika proposisi"],
+      "deskripsi": "Dasar logika.",
+      "pustaka": []
+    },
+    {
+      "kode": "DTI1003", "nama": "Praktikum Jaringan",
+      "sks": {"total": 2, "praktikum": 2}, "semester": 1, "prasyarat": [],
+      "jenis": "praktikum",
+      "cpl": [{"kode": "CPL01", "rumusan": "Mampu menerapkan pemikiran logis, kritis, dan sistematis."}],
+      "cpmk": [{"kode": "CPMK0031", "rumusan": "Mampu mengonfigurasi jaringan.", "cpl": ["CPL09"]}],
+      "bahan_kajian": ["Topologi"],
+      "deskripsi": null, "pustaka": []
+    },
+    {
+      "kode": "DTI4040", "nama": "Kerja Praktik",
+      "sks": {"total": 4, "lapangan": 4}, "semester": 7, "prasyarat": [],
+      "jenis": "magang_pkl", "cpl": [], "cpmk": [], "bahan_kajian": [], "deskripsi": "Magang industri.", "pustaka": []
+    }
+  ]
+}
