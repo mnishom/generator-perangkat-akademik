@@ -69,3 +69,42 @@ Route `/dev/login/{user}` hanya dimuat bila `APP_ENV=local` **dan** `DEV_LOGIN=t
 ## D-011 · Ekstraksi teks DOCX untuk pemeriksaan
 
 Pemeriksaan lapis 2 membaca teks langsung dari XML DOCX (badan, tabel, header, footer, kotak teks) lewat `DocxText`. Cara ini lebih toleran dibanding pembaca PhpWord, yang kerap gagal pada dokumen dengan elemen yang tidak didukung. PhpWord tetap dipakai untuk membuat DOCX uji.
+
+## D-012 · Mesin prompt
+
+- Prompt default per modul berasal dari berkas yang dikembalikan `defaultPrompts()` (Modul 1: `resources/prompts/rps_kontrak.md`, `resources/prompts/silabus.md`). Saat admin menyunting, isi berkas disimpan sebagai versi 1, lalu setiap suntingan menjadi versi baru. Admin dapat mengaktifkan kembali versi mana pun.
+- Pengguna dapat menyunting prompt untuk sesinya (`generation_sessions.prompts`), menyimpannya sebagai prompt pribadi (dipakai otomatis pada sesi berikutnya), atau mengembalikannya ke default.
+- Variabel `{{nama}}` diganti saat Job direncanakan. Variabel tak dikenal dibiarkan apa adanya dan ditampilkan sebagai peringatan. Variabel penting yang hilang (Modul 1: `{{nama_mk}}`, `{{kode_mk}}`, `{{data_mk}}`, `{{daftar_mk}}`) juga memunculkan peringatan.
+- Variabel tambahan di luar spesifikasi: `{{nama_kaprodi}}` dan `{{nama_dekan}}`.
+
+## D-013 · Instruksi sistem tetap Modul 1
+
+Ditulis di `app/Modules/PerangkatPembelajaran/SystemInstructions.php` (tidak dapat diedit dari UI) dan dikirim sebagai `system` pada setiap Job. Isinya:
+
+1. **Peran berkas** (dengan nama berkas sebenarnya): kurikulum = sumber data; contoh RPS = acuan gaya, kelengkapan, dan kedalaman saja (materi, Sub-CPMK, dan pustakanya tidak boleh disalin); template = format wajib yang diisi tanpa mengubah tata letak, kop, warna, ukuran kolom, maupun urutan bagian.
+2. Kode dan rumusan CPL/CPMK, SKS, dan semester wajib sama persis dengan data MK terverifikasi; dilarang mencantumkan CPMK milik MK lain.
+3. Struktur pertemuan menyesuaikan jenis MK dan template (praktikum, magang/PKL, dan tugas akhir tidak dipaksa ke pola 16 pertemuan); metode berpusat pada mahasiswa; total bobot 100%; pustaka usulan wajib nyata dan ditandai "(perlu verifikasi)".
+4. Data identitas sesi dipakai persis bila diisi. Bila kosong, Claude diminta membiarkannya kosong/bertitik-titik dan tidak mengarangnya; demikian pula nama dosen, NIP, nomor dokumen, dan tanda tangan.
+5. Kontrak Perkuliahan wajib memakai komponen/bobot penilaian, jadwal, dan pustaka yang sama dengan RPS dalam percakapan yang sama.
+6. Berkas final disimpan ke `$OUTPUT_DIR` dengan nama yang ditentukan aplikasi, lalu diperiksa ulang dari penanda template yang tersisa. Setiap jawaban diakhiri satu blok ```json laporan pemeriksaan sesuai skema.
+
+Prompt pemilik dikirim utuh. Aplikasi hanya menambahkan catatan tahap di bawahnya (misalnya "Tahap 1 dari 2: susun RPS saja…") agar RPS dan Kontrak dihasilkan berurutan di container yang sama.
+
+## D-014 · Laporan RPS ditambah `komponen_penilaian`
+
+Spesifikasi meminta pemeriksaan "komponen dan bobot penilaian di laporan Kontrak sama dengan di laporan RPS", tetapi skema laporan RPS tidak memuat daftar komponen. Karena itu laporan RPS ditambah kolom `komponen_penilaian` (`[{nama, bobot}]`) agar perbandingan dapat dilakukan. Nama komponen dibandingkan setelah dinormalisasi (huruf kecil, tanpa tanda baca).
+
+## D-015 · Silabus Prodi bertahap
+
+- Satu Job tingkat sesi (tanpa item). Langkahnya dibagi per semester; semester berisi lebih dari 10 MK dipecah menjadi beberapa bagian. Semua langkah berjalan dalam container dan percakapan yang sama.
+- Langkah pertama memuat prompt Silabus pemilik (dengan `{{daftar_mk}}` berisi seluruh MK). Setiap langkah menyertakan data lengkap MK kelompoknya.
+- Dokumen kerja disimpan di `/tmp/kerja/` dalam container. Hanya langkah terakhir yang menyimpan berkas final ke `$OUTPUT_DIR` dan mengembalikan laporan, sehingga hanya satu dokumen yang tersimpan.
+- Silabus memuat **seluruh** MK terverifikasi, tidak hanya MK yang dicentang untuk RPS.
+
+## D-016 · Pemeriksaan mandiri Modul 1 (lapis 2)
+
+- Kode diperiksa dengan pencocokan toleran pemisah ("CPMK-019.1" ≈ "CPMK0191"). Sub-CPMK seperti "CPMK0191.1" dianggap menyebut CPMK0191.
+- "CPMK milik MK lain" hanya dihitung untuk kode yang unik bagi satu MK lain dan tidak dimiliki MK ini. Dengan begitu, penomoran CPMK yang sama di banyak MK (mis. CPMK1) tidak memicu peringatan palsu.
+- SKS dianggap tercantum bila pola seperti "3 SKS", "SKS: 3", atau "Bobot … 3" ditemukan.
+- Penanda template yang tersisa: "[isi …]", "<isi …>", "{{…}}", "lorem ipsum", "XXX", serta baris bertitik-titik/bergaris bawah panjang, kecuali pada baris identitas (nama, dosen, NIP/NIDN, tanda tangan, ketua, dekan, tanggal, nomor, dsb.).
+- Laporan Claude juga diperiksa silang: kode MK, SKS, `cpmk_digunakan`, total bobot 100%, `bobot_konsisten`, `cpmk_tanpa_subcpmk`, `konsisten_dengan_rps`, `mk_terlewat`, dan `jumlah_mk_di_dokumen`.

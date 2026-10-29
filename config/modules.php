@@ -1,5 +1,7 @@
 <?php
 
+use App\Modules\PerangkatPembelajaran\PerangkatPembelajaranModule;
+
 /*
 | Modul aktif. Tambahkan modul baru dengan membuat folder app/Modules/<Nama>/,
 | kelas yang mengimplementasikan App\Core\Modules\ModuleContract, lalu
@@ -8,6 +10,6 @@
 
 return [
     'modules' => [
-        // \App\Modules\PerangkatPembelajaran\PerangkatPembelajaranModule::class,
+        PerangkatPembelajaranModule::class,
     ],
 ];

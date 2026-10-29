@@ -33,6 +33,6 @@
     </ol>
 
     <div>
-        @livewire($steps[$current]['component'], ['sessionId' => $session->id], key($current.'-'.$session->id))
+        @livewire(\App\Providers\AppServiceProvider::stepComponentName($moduleDef->key(), $current), ['sessionId' => $session->id], key($current.'-'.$session->id))
     </div>
 </div>
