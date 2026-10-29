@@ -2,9 +2,12 @@
 
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\DocumentDownloadController;
+use App\Http\Controllers\LibraryFileDownloadController;
 use App\Http\Middleware\EnsureModuleAccess;
 use App\Livewire\Admin;
 use App\Livewire\Dashboard;
+use App\Livewire\Library\DocumentLibraryPage;
+use App\Livewire\Library\FileLibraryPage;
 use App\Livewire\Modules\ModuleHome;
 use App\Livewire\Modules\WizardHost;
 use App\Livewire\PilihProdi;
@@ -33,6 +36,10 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/sesi/{session}', SessionShow::class)->name('sessions.show');
         Route::get('/dokumen/{document}/unduh', DocumentDownloadController::class)->name('documents.download');
+
+        Route::get('/pustaka-berkas', FileLibraryPage::class)->name('library.files');
+        Route::get('/pustaka-berkas/{file}/unduh', LibraryFileDownloadController::class)->name('library.download');
+        Route::get('/pustaka-dokumen', DocumentLibraryPage::class)->name('library.documents');
     });
 
     Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {

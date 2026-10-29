@@ -16,6 +16,12 @@
     </div>
 @endif
 
+<div class="space-y-1">
+    <p class="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-krem-300/70">Pustaka</p>
+    <a href="{{ route('library.files') }}" class="{{ $link(request()->routeIs('library.files')) }}" wire:navigate><x-icon name="folder" /> Pustaka Berkas</a>
+    <a href="{{ route('library.documents') }}" class="{{ $link(request()->routeIs('library.documents')) }}" wire:navigate><x-icon name="book" /> Pustaka Dokumen</a>
+</div>
+
 @if (auth()->user()?->isAdmin())
     <div class="space-y-1">
         <p class="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-krem-300/70">Admin</p>

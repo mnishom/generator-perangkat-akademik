@@ -3,7 +3,9 @@
 namespace App\Livewire\Sessions;
 
 use App\Core\Generation\SessionLauncher;
+use App\Core\Library\DocumentLibrary;
 use App\Core\Modules\ModuleRegistry;
+use App\Models\GeneratedDocument;
 use App\Models\GenerationSession;
 use App\Services\Audit;
 use Illuminate\Support\Facades\Gate;
@@ -34,6 +36,14 @@ class SessionShow extends Component
         Gate::authorize('update', $session);
         $n = $launcher->cancel($session);
         $this->dispatch('toast', type: 'info', message: "{$n} proses antre dibatalkan.");
+    }
+
+    public function toggleFinal(int $documentId, DocumentLibrary $library): void
+    {
+        $doc = GeneratedDocument::where('generation_session_id', $this->sessionId)->findOrFail($documentId);
+        Gate::authorize('update', $doc);
+        $library->markFinal($doc, ! $doc->is_final);
+        $this->dispatch('toast', type: 'success', message: $doc->is_final ? 'Ditandai final dan masuk Pustaka Dokumen.' : 'Tanda final dihapus.');
     }
 
     public function render()
