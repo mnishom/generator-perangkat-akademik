@@ -137,3 +137,27 @@ it('memakai ulang ekstraksi terverifikasi untuk dokumen kurikulum yang sama', fu
 
     expect($new->fresh()->curriculum_extraction_id)->toBe($extraction->id);
 });
+
+it('admin tanpa prodi dapat mengunggah dan memilih berkas di wizard', function () {
+    // Admin boleh memakai aplikasi tanpa memilih prodi (EnsureProdiSelected), sehingga
+    // berkas unggahannya ber-prodi_id null. Sebelumnya choose() menolak berkas itu (404).
+    $admin = User::factory()->admin()->withoutProdi()->create();
+    Livewire::actingAs($admin)->test(ModuleHome::class, ['module' => Module::KEY])->call('start')->assertRedirect();
+    $session = GenerationSession::sole();
+    $p = ['sessionId' => $session->id];
+
+    Livewire::actingAs($admin)->test(Steps\KurikulumStep::class, $p)
+        ->set('uploads.kurikulum', UploadedFile::fake()->createWithContent('Kurikulum.docx', Fake::docx('isi')))
+        ->assertStatus(200)->assertHasNoErrors()
+        ->assertSee('Kurikulum.docx')
+        ->call('continue')->assertDispatched('wizard-next');
+
+    $file = LibraryFile::sole();
+    expect($file->prodi_id)->toBeNull()
+        ->and($session->fresh()->inputs['kurikulum'])->toBe($file->id)
+        ->and($admin->can('view', $file))->toBeTrue();
+
+    // Berkas milik pengguna lain tanpa prodi tetap tidak terlihat.
+    $other = User::factory()->withoutProdi()->create();
+    expect(LibraryFile::availableTo($other)->count())->toBe(0);
+});

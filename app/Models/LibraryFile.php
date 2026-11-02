@@ -35,7 +35,9 @@ class LibraryFile extends Model
     /** Berkas yang dapat dipakai pengguna: milik prodinya + berkas bersama. */
     public function scopeAvailableTo(Builder $q, User $user): Builder
     {
+        // Berkas sendiri selalu tersedia, termasuk unggahan admin yang belum memilih prodi (prodi_id null).
         return $q->where(fn ($q) => $q->where('is_shared', true)
+            ->orWhere('uploaded_by', $user->id)
             ->when($user->prodi_id, fn ($q) => $q->orWhere('prodi_id', $user->prodi_id)));
     }
 
