@@ -9,7 +9,8 @@ class LibraryFilePolicy
 {
     public function view(User $user, LibraryFile $file): bool
     {
-        return $user->isAdmin() || $file->is_shared || ($file->prodi_id && $file->prodi_id === $user->prodi_id);
+        return $user->isAdmin() || $file->is_shared || $file->uploaded_by === $user->id
+            || ($file->prodi_id && $file->prodi_id === $user->prodi_id);
     }
 
     /** Hapus: pengunggah, atau admin. Berkas bersama hanya admin. */
