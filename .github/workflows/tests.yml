@@ -18,3 +18,39 @@ jobs:
       - run: cp .env.example .env && php artisan key:generate
       - run: ./vendor/bin/pint --test
       - run: ./vendor/bin/pest
+
+  # Produksi memakai MySQL/MariaDB: batas nama indeks 64 karakter, tipe JSON, dll.
+  # tidak terdeteksi oleh SQLite (lihat docs/DECISIONS.md D-020).
+  pest-mariadb:
+    runs-on: ubuntu-latest
+    services:
+      mariadb:
+        image: mariadb:10.11
+        env:
+          MARIADB_DATABASE: testing
+          MARIADB_USER: testing
+          MARIADB_PASSWORD: testing
+          MARIADB_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+    env:
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: testing
+      DB_USERNAME: testing
+      DB_PASSWORD: testing
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo_mysql, zip, xml, gd
+          coverage: none
+      - run: composer install --no-interaction --prefer-dist --no-progress
+      - run: cp .env.example .env && php artisan key:generate
+      - run: php artisan migrate --force && php artisan migrate:rollback --force
+      - run: ./vendor/bin/pest

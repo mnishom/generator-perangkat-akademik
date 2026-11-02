@@ -116,7 +116,8 @@ return new class extends Migration
             $table->unsignedBigInteger('output_tokens')->default(0);
             $table->boolean('is_final')->default(false);
             $table->timestamps();
-            $table->index(['generation_session_id', 'generation_item_id', 'doc_type']);
+            // Nama eksplisit: nama otomatis (75 karakter) melebihi batas 64 karakter MySQL/MariaDB.
+            $table->index(['generation_session_id', 'generation_item_id', 'doc_type'], 'gen_docs_session_item_type_index');
         });
 
         Schema::create('ai_usages', function (Blueprint $table) {

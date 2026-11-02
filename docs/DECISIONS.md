@@ -136,3 +136,9 @@ Dari "DRAF Panduan Kurikulum OBE Prodi S1 AKUNTANSI (Final 2026).pdf" (103 halam
 - **Dokumen tidak memuat deskripsi per MK.** Bila data deskripsi kosong, RPS/Silabus menyusun deskripsi singkat yang diturunkan hanya dari CPMK dan bahan kajian.
 - **Beda data antar-tabel** (mis. SKS SAK2022 di tabel Distribusi = 2, di tabel Organisasi = 3): ekstraksi memakai tabel distribusi/sebaran per semester dan mencatat perbedaannya di `catatan_ekstraksi`, yang tampil sebagai peringatan pada langkah verifikasi.
 - Ekstraksi mengabaikan contoh RPS/silabus yang dilampirkan di dalam dokumen kurikulum.
+
+## D-020 · Nama indeks eksplisit untuk MySQL/MariaDB
+
+- **Konteks:** deploy pertama ke cPanel gagal pada `php artisan migrate`: `1059 Identifier name 'generated_documents_generation_session_id_generation_item_id_doc_type_index' is too long`. Nama indeks otomatis Laravel (75 karakter) melebihi batas 64 karakter MySQL/MariaDB. SQLite (dipakai test dan CI) tidak memiliki batas ini, sehingga tidak terdeteksi.
+- **Keputusan:** indeks tersebut diberi nama eksplisit `gen_docs_session_item_type_index`. Migrasi yang sudah ada diubah langsung (bukan migrasi baru) karena di MySQL migrasi itu tidak pernah bisa selesai, jadi tidak ada database produksi yang memuat versi lamanya. Indeks komposit baru dengan nama otomatis lebih dari 64 karakter wajib diberi nama eksplisit.
+- CI ditambah job `pest-mariadb` (MariaDB 10.11): migrasi, rollback, dan seluruh test dijalankan di MariaDB.
